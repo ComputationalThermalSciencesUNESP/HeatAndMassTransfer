@@ -1,4 +1,5 @@
 # HeatAndMassTransfer #
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ComputationalThermalSciencesUNESP/HeatAndMassTransfer.git/main?labpath=finsHeatTransfer.ipynb)
 
 ### What is this repository for? ###
 
@@ -13,7 +14,7 @@ plots of IPywidgets. The requirements.txt file to set up your own environment
 is available in the repo. If you are using an Anaconda distribution (like me),
 run the following command to create an environment to run the notebooks:
 
-´$ conda create -n <environment-name> --file requirements.txt´
+´$ conda create -n <environment-name> --file environment.yml´
 
 ### Who do I talk to? ###
 
