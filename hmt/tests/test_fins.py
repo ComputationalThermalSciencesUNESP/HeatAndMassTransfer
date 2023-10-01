@@ -56,7 +56,7 @@ class TestFinsModule(unittest.TestCase):
                                         (kSteel, qSteel, LSteel)],
                                         ["Cu", "Al", "Steel"]):
 
-            pinFin = fins.FinRectangularPiniform(
+            pinFin = fins.FinPiniformRectangular(
                           length=finLength,
                           diameter=2*exFinRadius,
                           htc=exHtc,
@@ -98,7 +98,7 @@ class TestFinsModule(unittest.TestCase):
         exFinWidth = 0.20
         exFinThickness = 0.01
 
-        triFin = fins.FinTriangularPlanar(
+        triFin = fins.FinPlanarTriangular(
                       length=finLength,
                       width=exFinWidth,
                       thickness=exFinThickness,
