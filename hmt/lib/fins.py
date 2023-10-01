@@ -106,7 +106,63 @@ from scipy.special import i0, i1, k0, k1
 
 #     return M
 
-class FinUniformAtr():
+class Fin():
+
+    def __init__(
+            self,
+            htc: float,
+            k: float,
+            Tinf: float,
+            Tbase: float
+        ):
+        """Initiate model of a fin."""
+
+        self._h = htc
+        self._k = k
+        self._Tinf = Tinf
+        self._Tbase = Tbase
+
+        self._thetaB = Tbase - Tinf
+
+    def getLength(self):
+        """Get fin length."""
+
+        return self._L
+
+    def getProfileArea(self):
+        """Return fin profile area."""
+
+        return self._area_prof
+
+    def getSurfaceArea(self):
+        """Get fin surface area."""
+
+        return self._area_fin
+
+    def getVolume(self):
+        """Return fin volume."""
+
+        return self._volume
+
+    def getEfficiency(self):
+        """Compute efficiency of a fin."""
+
+        qMax = self._h*self._area_fin*self._thetaB
+
+        return self.getHeatTransfer()/qMax
+
+    def getEffectiveness(self):
+        """Return fin's effectiveness."""
+
+        qBaseNoFin = self._h*self._area_base*self._thetaB
+
+        return self.getHeatTransfer()/qBaseNoFin
+
+    def getThermalResistance(self):
+
+        return 1.0/(self._h*self._area_fin*self.getEfficiency())
+
+class FinUniformAtr(Fin):
 
     def __init__(
             self,
@@ -117,12 +173,13 @@ class FinUniformAtr():
         ):
         """Initiate model of fin with uniform section area."""
 
-        self._h = htc
-        self._k = k
-        self._Tinf = Tinf
-        self._Tbase = Tbase
-
-        self._thetaB = Tbase - Tinf
+        Fin.__init__(
+            self,
+            htc=htc,
+            k=k,
+            Tbase=Tbase,
+            Tinf=Tinf
+        )
 
     def _check_x(self, x):
 
@@ -141,6 +198,16 @@ class FinUniformAtr():
         return np.sqrt(
                    self._h*self._perimeter*self._k*self._area_tr
                )*self._thetaB
+
+    def getPerimeter(self):
+        """Get fin perimeter."""
+
+        return self._perimeter
+
+    def getTrArea(self):
+        """Get fin section area."""
+
+        return self._area_tr
 
     def getTemperature(self, x):
         """Compute temperature distribution in a planar fin.
@@ -169,49 +236,7 @@ class FinUniformAtr():
         # by the equation for the adiabatic tip
         return self._M*np.tanh(self._m*self._Lc)
 
-    def getEfficiency(self):
-
-        qMax = self._h*self._area_fin*self._thetaB
-
-        return self.getHeatTransfer()/qMax
-
-    def getEffectiveness(self):
-
-        qBaseNoFin = self._h*self._area_base*self._thetaB
-
-        return self.getHeatTransfer()/qBaseNoFin
-
-    def getLength(self):
-        """Get fin length."""
-
-        return self._L
-
-    def getPerimeter(self):
-        """Get fin perimeter."""
-
-        return self._perimeter
-
-    def getProfileArea(self):
-        """Return fin profile area."""
-
-        return self._area_prof
-
-    def getSurfaceArea(self):
-        """Get fin surface area."""
-
-        return self._area_fin
-
-    def getTrArea(self):
-        """Get fin section area."""
-
-        return self._area_tr
-
-    def getVolume(self):
-        """Return fin volume."""
-
-        return self._volume
-
-class FinNonUniformAtr():
+class FinNonUniformAtr(Fin):
 
     def __init__(
             self,
@@ -222,18 +247,13 @@ class FinNonUniformAtr():
         ):
         """Initiate geometric model of fin with non-uniform section area."""
 
-        self._h = htc
-        self._k = k
-        self._Tinf = Tinf
-        self._Tbase = Tbase
-
-        self._thetaB = Tbase - Tinf
-
-    # Onedimensional dimensions
-    def getLength(self):
-        """Return fin length."""
-
-        return self._L
+        Fin.__init__(
+            self,
+            htc=htc,
+            k=k,
+            Tbase=Tbase,
+            Tinf=Tinf
+        )
 
     def getPerimeter(self, x):
         """Return fin perimeter, given longitudinal position.
@@ -246,17 +266,6 @@ class FinNonUniformAtr():
 
         return self._perimeter(x)
 
-    # 2D dimensions
-    def getSurfaceArea(self):
-        """Return fin surface area."""
-
-        return self._area_fin
-
-    def getProfileArea(self):
-        """Return fin profile area."""
-
-        return self._area_prof
-
     def getTrArea(self, x):
         """Transversal area of annular fin based on longitudinal position.
 
@@ -266,12 +275,6 @@ class FinNonUniformAtr():
         """
 
         return self._area_tr(x)
-
-    # 3D dimensions
-    def getVolume(self):
-        """Return fin volume."""
-
-        return self._volume
 
     def getTemperature(
             self,
@@ -292,19 +295,6 @@ class FinNonUniformAtr():
         """Return fin's total return transfer."""
         # Must be in derived classes for non uniform fins
         pass
-
-    def getEfficiency(self):
-
-        qMax = self._h*self._area_fin*self._thetaB
-
-        return self.getHeatTransfer()/qMax
-
-    def getEffectiveness(self):
-        """Return fin's effectiveness."""
-
-        qBaseNoFin = self._h*self._area_base*self._thetaB
-
-        return self.getHeatTransfer()/qBaseNoFin
 
 class FinRectangularPlanar(FinUniformAtr):
 
