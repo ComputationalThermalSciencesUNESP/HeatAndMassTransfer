@@ -135,10 +135,27 @@ class Fin():
 
         return self._L
 
+    def getOperationalConditions(self):
+        """Get the operation conditions of a fin.
+
+        Given the fin, return the heat transfer coefficient, base temperature,
+        flow temperature, and thermal conductivity. Return a dictionary.
+        """
+
+        return {"htc": self._h,
+                "k": self._k,
+                "Tinf": self._Tinf,
+                "Tbase": self._Tbase}
+
     def getProfileArea(self):
         """Return fin profile area."""
 
         return self._area_prof
+
+    def getBaseArea(self):
+        """Return fin base area."""
+
+        return self._area_base
 
     def getSurfaceArea(self):
         """Get fin surface area."""
@@ -853,3 +870,51 @@ class FinPiniformParabolic(FinNonUniformAtr):
         """Compute efficiency of parabolic piniform fin."""
 
         return 2.0/(1.0 + np.sqrt((4.0/9.0)*(self._m*self._L)**2 + 1.0))
+
+class FinArray():
+    """Model of fin arrays.
+
+    Class representing a specific fin array with a provided fin object, its
+    number, and prime surface dimensions.
+    """
+
+    def __init__(
+            self,
+            fin_object,
+            prime_area,
+            nfins
+        ):
+        """Initiate model of a fin array."""
+
+        self._fin = fin_object
+        self._prime_area = prime_area
+        self._nfins = nfins
+
+        self._fin_area = self._fin.getSurfaceArea()
+
+    def getTotalArea(self):
+        """Compute total area of finned surface."""
+
+        return self._nfins*self._fin_area + self._prime_area
+
+    def getEfficiency(self):
+        """Compute efficiency of fin array."""
+
+        etaf = self._fin.getEfficiency()
+        At   = self.getTotalArea()
+        Af   = self._fin_area
+        N    = self._nfins
+
+        return 1 - (N*Af/At)*(1 - etaf)
+
+    def getHeatTransfer(self):
+        """Compute total heat transfer rate of fin array."""
+
+        dictOpCond = self._fin.getOperationalConditions()
+
+        htc     = dictOpCond["htc"]
+        thetaB  = dictOpCond["Tbase"] - dictOpCond["Tinf"]
+        At      = self.getTotalArea()
+        etao    = self.getEfficiency()
+
+        return etao*htc*At*thetaB
