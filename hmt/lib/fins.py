@@ -130,6 +130,9 @@ class Fin():
 
         self._thetaB = Tbase - Tinf
 
+    def getmCoeffFin(self):
+        return self._m
+
     def getLength(self):
         """Get fin length."""
 
@@ -178,10 +181,13 @@ class FinUniformAtr(Fin):
 
     def __init__(
             self,
+            length: float,
             htc: float,
             k: float,
             Tinf: float,
-            Tbase: float
+            Tbase: float,
+            area_tr: float=None,
+            perimeter: float=None
         ):
         """Initiate model of fin with uniform section area."""
 
@@ -192,6 +198,20 @@ class FinUniformAtr(Fin):
             Tbase=Tbase,
             Tinf=Tinf
         )
+
+        self._L = length
+
+        if area_tr is not None and perimeter is not None:
+            self._area_tr   = area_tr
+            self._perimeter = perimeter
+            self._area_base = self._area_tr
+            self._volume    = self._area_base*self._L
+
+            self._area_fin  = self._perimeter*self._L + self._area_base
+
+            # Their computattion depends on the geometry
+            self._m = self._mCoeffFin()
+            self._M = self._MCoeffFin()
 
     def _check_x(self, x):
 
@@ -215,6 +235,11 @@ class FinUniformAtr(Fin):
         """Get fin perimeter."""
 
         return self._perimeter
+
+    def getProfileArea(self):
+        raise NotImplementedError(
+                "Profile area not implemented for generic-profile fin."
+            )
 
     def getTrArea(self):
         """Get fin section area."""
@@ -361,6 +386,7 @@ class FinPlanarRectangular(FinUniformAtr):
 
         FinUniformAtr.__init__(
             self,
+            length=length,
             htc=htc,
             k=k,
             Tbase=Tbase,
@@ -368,7 +394,6 @@ class FinPlanarRectangular(FinUniformAtr):
         )
 
         # Rectangular planar fin
-        self._L = length
         self._w = width
         self._t = thickness
 
@@ -404,6 +429,7 @@ class FinPiniformRectangular(FinUniformAtr):
 
         FinUniformAtr.__init__(
             self,
+            length=length,
             htc=htc,
             k=k,
             Tbase=Tbase,
