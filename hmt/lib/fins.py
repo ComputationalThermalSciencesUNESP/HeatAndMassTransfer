@@ -376,7 +376,10 @@ class FinPlanarRectangular(FinUniformAtr):
         self._Lc = self._L + 0.5*self._t
 
         self._perimeter = 2*self._w + 2*self._t
-        self._area_fin  = self._Lc*self._perimeter
+
+        # For uniform section area fins, use the Lc to
+        # compute the area (this includes the tip area)
+        self._area_fin  = 2*self._w*self._Lc + 2*self._L*self._t
         self._area_tr   = self._w*self._t
         self._area_base = self._area_tr
         self._area_prof = self._t*self._L
@@ -408,15 +411,16 @@ class FinPiniformRectangular(FinUniformAtr):
         )
 
         # Rectangular piniform fin test
-        self._L = length
         self._D = diameter
 
         # Equivalent length to compute efficiency
         self._Lc = self._L + 0.25*self._D
 
         self._perimeter = np.pi*self._D
-        self._area_fin  = self._Lc*self._perimeter
 
+        # For uniform section area fins, use the Lc to
+        # compute the area (this includes the tip area)
+        self._area_fin  = self._Lc*self._perimeter
         self._area_tr   = 0.25*np.pi*self._D**2
         self._area_base = self._area_tr
         self._area_prof = self._D*self._L
