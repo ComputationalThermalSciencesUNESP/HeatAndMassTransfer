@@ -1,7 +1,9 @@
 # HeatAndMassTransfer #
-[![Notebook - Aula: Aletas](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ComputationalThermalSciencesUNESP/HeatAndMassTransfer.git/main?labpath=finsHeatTransfer.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ComputationalThermalSciencesUNESP/HeatAndMassTransfer.git/main?labpath=finsHeatTransfer.ipynb)
+*Notebook - Aula: Aletas*
 
-[![Notebook - Exemplos Aletas](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ComputationalThermalSciencesUNESP/HeatAndMassTransfer.git/main?labpath=finsExamplesIncropera8thEd.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ComputationalThermalSciencesUNESP/HeatAndMassTransfer.git/main?labpath=finsExamplesIncropera8thEd.ipynb)
+*Notebook - Exemplos Aletas*
 
 ### What is this repository for? ###
 
