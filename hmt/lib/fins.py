@@ -37,81 +37,6 @@ def i2(x):
     """Modified Bessel function of first kind of second order."""
     return iv(2, x)
 
-# def temperatureFinInfLength(
-#         x: float,
-#         htc: float,
-#         k: float,
-#         perimeter: float,
-#         area_tr: float,
-#         Tinf: float,
-#         Tbase: float
-#     )   -> float:
-
-#     thetaB = diffTemp(Tbase, Tinf)
-
-#     m = mCoeffFin(
-#             htc,
-#             k,
-#             perimeter,
-#             area_tr
-#         )
-
-#     return Tinf + thetaB*np.exp(-m*x)
-# def heatTransferFinActiveBoundary(
-#         length: float,
-#         htc: float,
-#         k: float,
-#         perimeter: float,
-#         area_tr: float,
-#         Tinf: float,
-#         Tbase: float
-#     )   -> float:
-
-#     m = mCoeffFin(
-#             htc,
-#             k,
-#             perimeter,
-#             area_tr
-#         )
-
-#     M = MCoeffFin(
-#             htc,
-#             k,
-#             perimeter,
-#             area_tr,
-#             Tinf,
-#             Tbase
-#         )
-
-#     coeff = htc/(m*k)
-
-#     return M*(
-#                 np.sinh(m*length) + coeff*np.cosh(m*length)
-#            )/(
-#                 np.cosh(m*length) + coeff*np.sinh(m*length)
-#            )
-
-# def heatTransferFinInfLength(
-#         htc: float,
-#         k: float,
-#         perimeter: float,
-#         area_tr: float,
-#         Tinf: float,
-#         Tbase: float
-#     )   -> float:
-
-
-#     M = MCoeffFin(
-#             htc,
-#             k,
-#             perimeter,
-#             area_tr,
-#             Tinf,
-#             Tbase
-#         )
-
-#     return M
-
 class Fin():
 
     def __init__(
@@ -246,11 +171,7 @@ class FinUniformAtr(Fin):
 
         return self._area_tr
 
-    def getTemperature(self, x):
-        """Compute temperature distribution in a planar fin.
-
-        The computation here is based on the active boundary of a uniform fin.
-        """
+    def _temperature_convective_tip(self, x):
 
         self._check_x(x)
 
@@ -266,12 +187,132 @@ class FinUniformAtr(Fin):
 
         return self._Tinf + thetaRatio*self._thetaB
 
-    def getHeatTransfer(self):
+    def _temperature_adiabatic_tip(self, x):
 
-        # By using the equivalent length
-        # the heat transfer can be approximated
-        # by the equation for the adiabatic tip
-        return self._M*np.tanh(self._m*self._Lc)
+        self._check_x(x)
+
+        arg   = self._m*(self._L - x)
+
+        thetaRatio = (
+                        np.cosh(arg)
+                     )/(
+                        np.cosh(self._m*self._L)
+                     )
+
+        return self._Tinf + thetaRatio*self._thetaB
+
+    def _temperature_temperature_tip(self, x, Ttip):
+
+        self._check_x(x)
+
+        thetaL = Ttip - Tinf
+        arg   = self._m*(self._L - x)
+
+        thetaRatio = (
+                             (thetaL/self._thetaB)*np.sinh(self._m*x)
+                        +    np.sinh(arg)
+                     )/(
+                            np.sinh(self._m*self._L)
+                     )
+
+        return self._Tinf + thetaRatio*self._thetaB
+
+    def _temperature_infinite_length(self, x):
+
+        self._check_x(x)
+
+        thetaRatio = np.exp(-self._m*x)
+
+        return self._Tinf + thetaRatio*self._thetaB
+
+    def _heat_transfer_convective_tip(self):
+        arg   = self._m*self._L
+        coeff = self._h/(self._m*self._k)
+
+        return  self._M*(
+                             np.sinh(arg) + coeff*np.cosh(arg)
+                     )/(
+                             np.cosh(arg) + coeff*np.sinh(arg)
+                     )
+
+    def _heat_transfer_adiabatic_tip(self):
+        return  self._M*np.tanh(self._m*self._L)
+
+    def _heat_transfer_temperature_tip(self, Ttip):
+        arg   = self._m*self._L
+        thetaL = Ttip - Tinf
+
+        return  self._M*(
+                             np.cosh(arg) - (thetaL/self._thetaB)
+                     )/(
+                             np.sinh(arg)
+                     )
+
+    def _heat_transfer_infinite_length(self):
+        return  self._M
+
+    def getTemperature(
+            self,
+            x,
+            model="convective_tip",
+            Ttip: float=None
+        ):
+        """Compute temperature distribution in a planar fin.
+
+        The computation here is based on the active boundary of a uniform fin,
+        by default. Change the 'model' argument select the chosen model:
+        "adiabatic_tip", "temperature_tip", or "infinite_fin".
+        """
+
+        if model == "adiabatic_tip":
+            return self._temperature_adiabatic_tip(x)
+
+        elif model == "temperature_tip":
+
+            if Ttip is None:
+                raise ValueError(
+                        "Tip temperature must be specified!"
+                    )
+
+            return self._temperature_temperature_tip(x, Ttip)
+
+        elif model == "infinite_fin":
+            return self._temperature_infinite_length(x)
+
+        else:
+            # Either none or convective tip specified
+            return self._temperature_convective_tip(x)
+
+    def getHeatTransfer(
+            self,
+            model="convective_tip",
+            Ttip: float=None
+        ):
+        """Get total heat transfer to fin.
+
+        The computation here is based on the active boundary of a uniform fin,
+        by default. Change the 'model' argument select the chosen model:
+        "adiabatic_tip", "temperature_tip", or "infinite_fin".
+        """
+
+        if model == "adiabatic_tip":
+            return self._heat_transfer_adiabatic_tip()
+
+        elif model == "temperature_tip":
+
+            if Ttip is None:
+                raise ValueError(
+                        "Tip temperature must be specified!"
+                    )
+
+            return self._heat_transfer_temperature_tip(Ttip)
+
+        elif model == "infinite_fin":
+            return self._heat_transfer_infinite_length()
+
+        else:
+            # Either none or convective tip specified
+            return self._heat_transfer_convective_tip()
 
     def getEfficiency(self):
         """Compute efficiency of a fin."""
