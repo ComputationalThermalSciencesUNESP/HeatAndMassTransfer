@@ -1,26 +1,35 @@
-# HeatAndMassTransfer #
+# Transferência de Calor e Massa Computacional #
+
+### Para quê serve este repositório? ###
+
+Este repo contém arquivos de exercícios, tutoriais e teoria que auxiliam na
+disciplina de Transferência de Calor e Massa ministrada no curso de Engenharia
+Mecânica da Universidade Estadual Paulista (UNESP), Faculdade de Engenharia,
+Bauru pelo Prof. Dr. Iago Oliveira. Este material também serve aos discentes
+para terem uma experiência "extendida" da disciplina, com exemplos
+computacionais. Um mínimo conhecimento prévio de Python é recomendado para a
+execução dos notebooks.
+
+### Notebooks de Teoria Disponíveis via Binder ###
+
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ComputationalThermalSciencesUNESP/HeatAndMassTransfer.git/main?labpath=finsHeatTransfer.ipynb)
 *Notebook - Aula: Aletas*
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ComputationalThermalSciencesUNESP/HeatAndMassTransfer.git/main?labpath=finsExamplesIncropera8thEd.ipynb)
 *Notebook - Exemplos Aletas*
 
-### What is this repository for? ###
-
-Repository with files of exercises, tutorials and theory about the Heat and
-Mass Transfer discipline teached at the Mechanical Engineering course of the
-São Paulo State University (UNESP), School of Engineering, Bauru.  
-
 ### How do I get set up? ###
 
-Currently, the tutorials use mainly NumPy, SciPy, and Pandas, with interactive
-plots of IPywidgets. The requirements.txt file to set up your own environment
-is available in the repo. If you are using an Anaconda distribution (like me),
-run the following command to create an environment to run the notebooks:
+Atualmente, os tutoriais utilizam principalmente NumPy, SciPy e Pandas, com
+gráficos interativos do IPywidgets. O arquivo requirements.txt para configurar
+seu próprio ambiente está disponível no repositório. Se você estiver usando uma
+distribuição Anaconda (como eu), execute o seguinte comando para criar um
+ambiente para executar os notebooks:
 
 ´$ conda create -n environment-name --file environment.yml´
 
-### Who do I talk to? ###
+sendo "environment-name" o nome que você deseja dar ao ambiente.
 
-Iago Lessa de Oliveira
-(iago.oliveira@unesp.br)
+### Dúvidas? ###
+
+Entre em contato com o Prof. Iago Oliveira via email: iago.oliveira@unesp.br
