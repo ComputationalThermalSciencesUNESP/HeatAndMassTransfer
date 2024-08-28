@@ -18,6 +18,9 @@ execução dos notebooks.
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ComputationalThermalSciencesUNESP/HeatAndMassTransfer.git/main?labpath=finsExamplesIncropera8thEd.ipynb)
 *Notebook - Exemplos Aletas*
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ComputationalThermalSciencesUNESP/HeatAndMassTransfer.git/main?labpath=notebooks%2FLecture_HeatConduction.ipynb)
+*Notebook - Lei de Fourier*
+
 ### How do I get set up? ###
 
 Atualmente, os tutoriais utilizam principalmente NumPy, SciPy e Pandas, com
